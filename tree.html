@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>知识面书 - 思维共享平台</title>
+    <style>
+        /* 定义全局变量 */
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --text-color: #34495e;
+        }
+        /* 全局样式初始化 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        /* 页面背景设置 */
+        body {
+            background: linear-gradient(rgba(245, 246, 250, 0.5), rgba(245, 246, 250, 0.6)), url('./beijing.png') center/cover fixed;
+            min-height: 100vh;
+        }
+        /* 导航栏样式 */
+       .navbar {
+            background: rgba(255, 255, 255, 0.96)!important;
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 1rem 2rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+        }
+       .navbar h1 {
+            color: var(--primary-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 8px 16px;
+            border-radius: 8px;
+            display: inline-block;
+        }
+       .navbar h1:hover {
+            background: rgba(52, 152, 219, 0.1);
+            transform: translateY(-2px);
+        }
+       .navbar h1:active {
+            transform: translateY(1px);
+            background: rgba(52, 152, 219, 0.2);
+        }
+        /* 搜索框样式 */
+       .search-wrapper {
+            position: relative;
+            flex: 1;
+            max-width: 600px;
+            margin: 0 20px;
+        }
+       .search-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        #searchInput {
+            width: 100%;
+            padding: 12px 45px 12px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 30px;
+            font-size: 16px;
+            background: rgba(255,255,255,0.9);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        #searchInput:focus {
+            border-color: #3498db;
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.2);
+            outline: none;
+            background: white;
+        }
+       .search-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0.6;
+            cursor: pointer;
+        }
+        /* 搜索结果样式 */
+       .search-results {
+            position: absolute;
+            top: 120%;
+            width: 100%;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            max-height: 60vh;
+            overflow-y: auto;
+            display: none;
+            z-index: 1000;
+        }
+       .search-item {
+            padding: 16px 24px;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+       .search-item:hover {
+            background: #f8f9ff;
+        }
+       .highlight {
+            color: #3498db;
+            font-weight: 600;
+        }
+       .no-results {
+            padding: 20px;
+            text-align: center;
+            color: #666;
+        }
+       .selected-item {
+            background: #f0f7ff!important;
+        }
+        /* 内容容器样式 */
+       .container {
+            max-width: 1200px;
+            margin: 80px auto 2rem;
+            padding: 0 20px;
+        }
+        /* 知识卡片样式 */
+       .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            padding: 2rem 0;
+        }
+       .card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+       .card:hover {
+            transform: translateY(-5px);
+        }
+       .card h2 {
+            color: var(--secondary-color);
+            margin-bottom: 0.5rem;
+        }
+       .card p {
+            color: var(--text-color);
+            font-size: 0.95em;
+        }
+        /* 详情页样式 */
+       .detail-page {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            margin-top: 2rem;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+        }
+       .back-btn {
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <h1 onclick="goBack()">📚 知识面书</h1>
+        <div class="search-wrapper">
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="搜索知识节点..." autocomplete="off" onkeyup="handleInput(event)">
+                <div class="search-icon">🔍</div>
+                <div id="searchResults" class="search-results"></div>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        <!-- 主页内容 -->
+        <div id="homePage" class="card-grid">
+            <!-- 卡片通过JavaScript动态生成 -->
+        </div>
+        <!-- 详情页容器 -->
+        <div id="detailPage" class="detail-page" style="display: none;">
+            <button class="back-btn" onclick="goBack()">← 返回列表</button>
+            <h1 id="detailTitle"></h1>
+            <div class="meta">
+                <span id="detailAuthor"></span>
+                <span id="detailDate"></span>
+            </div>
+            <hr>
+            <div id="detailContent"></div>
+        </div>
+    </div>
+    <script>
+        // 新增搜索状态管理
+        let currentFocus = -1;
+        const MAX_RESULTS = 10;
+        // 模拟数据存储，实际应用中可从后端获取
+        const knowledgeData = [
+            {
+                id: 1,
+                title: "信号与系统",
+                author: "王小明",
+                date: "2023-08-20",
+                content: "信号与系统分为连续系统和离散系统详细内容）"
+            },
+            {
+                id: 2,
+                title: "傅里叶变换对",
+                author: "李华",
+                date: "2023-08-18",
+                content: "从零开始理解神经网络的基本原理...（详细内容）"
+            },
+            {
+                id: 3,
+                title: "拉普拉斯变换对",
+                author: "李华",
+                date: "2023-08-18",
+                content: "从零开始理解神经网络的基本原理...（详细内容）"
+            },
+            {
+                id: 4,
+                title: "z变换对",
+                author: "李华",
+                date: "2023-08-18",
+                content: "从零开始理解神经网络的基本原理...（详细内容）"
+            },
+            {
+                id: 5,
+                title: "深度学习入门教程",
+                author: "李华",
+                date: "2023-08-18",
+                content: "从零开始理解神经网络的基本原理...（详细内容）"
+            },
+            {
+                id: 6,
+                title: "教程",
+                author: "李华",
+                date: "2023-08-18",
+                content: "从零开始理解神经网络的基本原理...（详细内容）"
+            }
+        ];
+
+        // 初始化页面，生成知识卡片
+        function initHomePage() {
+            const container = document.getElementById('homePage');
+            container.innerHTML = knowledgeData.map(item => `
+                <div class="card" onclick="showDetail(${item.id})">
+                    <h2>${item.title}</h2>
+                    <p>作者：${item.author}</p>
+                    <p>发布日期：${item.date}</p>
+                </div>
+            `).join('');
+        }
+
+        // 显示详情页
+        function showDetail(id) {
+            const data = knowledgeData.find(item => item.id === id);
+            document.getElementById('homePage').style.display = 'none';
+            document.getElementById('detailPage').style.display = 'block';
+
+            document.getElementById('detailTitle').textContent = data.title;
+            document.getElementById('detailAuthor').textContent = `作者：${data.author}`;
+            document.getElementById('detailDate').textContent = `发布日期：${data.date}`;
+            document.getElementById('detailContent').textContent = data.content;
+        }
+
+        // 返回主页
+        function goBack() {
+            document.getElementById('homePage').style.display = 'grid';
+            document.getElementById('detailPage').style.display = 'none';
+        }
+
+        // 输入处理（带防抖），同时处理键盘事件
+        let searchTimer;
+        function handleInput(event) {
+            clearTimeout(searchTimer);
+            searchTimer = setTimeout(() => {
+                const keyword = event.target.value;
+                if (keyword) {
+                    performSearch(keyword);
+                } else {
+                    document.getElementById('searchResults').style.display = 'none';
+                }
+            }, 300);
+            // 处理箭头键和回车键
+            const items = document.getElementsByClassName('search-item');
+            if (event.key === 'ArrowDown') {
+                currentFocus = Math.min(currentFocus + 1, items.length - 1);
+                updateSelection();
+            } else if (event.key === 'ArrowUp') {
+                currentFocus = Math.max(currentFocus - 1, -1);
+                updateSelection();
+            } else if (event.key === 'Enter') {
+                event.preventDefault();
+                if (currentFocus > -1) {
+                    items[currentFocus].click();
+                }
+            }
+        }
+
+        // 更新选中状态
+        function updateSelection() {
+            const items = document.getElementsByClassName('search-item');
+            Array.from(items).forEach((item, index) => {
+                item.classList.toggle('selected-item', index === currentFocus);
+            });
+        }
+
+        // 执行搜索
+        function performSearch(keyword) {
+            const resultsContainer = document.getElementById('searchResults');
+            // 显示加载状态
+            resultsContainer.innerHTML = '<div class="loading">搜索中...</div>';
+            resultsContainer.style.display = 'block';
+            // 实现模糊搜索
+            const filtered = knowledgeData.filter(item => 
+                item.title.toLowerCase().includes(keyword.toLowerCase()) ||
+                item.content.toLowerCase().includes(keyword.toLowerCase()) ||
+                item.author.toLowerCase().includes(keyword.toLowerCase())
+            ).slice(0, MAX_RESULTS);
+            renderResults(filtered, keyword);
+        }
+
+        // 渲染搜索结果
+        function renderResults(results, keyword) {
+            const container = document.getElementById('searchResults');
+            if (results.length === 0) {
+                container.innerHTML = `
+                    <div class="no-results">
+                        未找到"<span class="highlight">${keyword}</span>"相关结果
+                    </div>
+                `;
+            } else {
+                container.innerHTML = results.map(item => `
+                    <div class="search-item" 
+                         onclick="jumpToNode(${item.id})"
+                         onmouseover="currentFocus = -1">
+                        <div class="title">${highlightText(item.title, keyword)}</div>
+                        <div class="meta">
+                            <span class="author">${item.author}</span>
+                            <span class="date">${item.date}</span>
+                        </div>
+                        <div class="excerpt">${getExcerpt(item.content, keyword)}</div>
+                    </div>
+                `).join('');
+            }
+            container.style.display = 'block';
+        }
+
+        // 文本高亮函数
+        function highlightText(text, keyword) {
+            const regex = new RegExp(`(${keyword})`, 'gi');
+            return text.replace(regex, '<span class="highlight">$1</span>');
+        }
+
+        // 内容摘要生成
+        function getExcerpt(content, keyword) {
+            const index = content.toLowerCase().indexOf(keyword.toLowerCase());
+            const start = Math.max(0, index - 30);
+            const end = Math.min(content.length, index + keyword.length + 70);
+            let excerpt = content.slice(start, end);
+            if (start > 0) excerpt = '...' + excerpt;
+            if (end < content.length) excerpt += '...';
+            return highlightText(excerpt, keyword);
+        }
+
+        // 跳转到具体知识节点
+        function jumpToNode(id) {
+            const item = knowledgeData.find(i => i.id === id);
+            showDetail(id);
+            document.getElementById('searchResults').style.display = 'none';
+        }
+
+        // 页面加载时初始化
+        window.onload = initHomePage;
+        // 响应式处理
+        window.onresize = () => {
+            document.querySelector('.card-grid').style.gridTemplateColumns = 
+                `repeat(auto-fill, minmax(${window.innerWidth > 768? 300 : 250}px, 1fr))`;
+        };
+    </script>
+</body>
+</html>
